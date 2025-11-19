@@ -9,30 +9,38 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
 public class OrderForm {
-    private WebDriver webDriver;
-    private By firstNameLocator = By.xpath("//input[@placeholder='* Имя']");
-    private By lastNameLocator = By.xpath("//input[@placeholder='* Фамилия']");
-    private By addressLocator = By.xpath("//input[@placeholder='* Адрес: куда привезти заказ']");
-    private By metroStationLocator = By.xpath("//input[@placeholder='* Станция метро']");
-    private By phoneLocator = By.xpath("//input[@placeholder='* Телефон: на него позвонит курьер']");
-    private By dateLocator = By.xpath("//input[@placeholder='* Когда привезти самокат']");
-    private By commentLocator = By.xpath("//input[@placeholder='Комментарий для курьера']");
-    private WebDriverWait wait;
+    private final WebDriver webDriver;
+    //Поле Имя
+    private final By firstNameLocator = By.xpath("//input[@placeholder='* Имя']");
+    //Поле Фамилия
+    private final By lastNameLocator = By.xpath("//input[@placeholder='* Фамилия']");
+    //После Адресс
+    private final By addressLocator = By.xpath("//input[@placeholder='* Адрес: куда привезти заказ']");
+    //Поле Станця метро
+    private final By metroStationLocator = By.xpath("//input[@placeholder='* Станция метро']");
+    //Поле телефон
+    private final By phoneLocator = By.xpath("//input[@placeholder='* Телефон: на него позвонит курьер']");
+    //Поле Дата
+    private final By dateLocator = By.xpath("//input[@placeholder='* Когда привезти самокат']");
+    //Поле Комментарий
+    private final By commentLocator = By.xpath("//input[@placeholder='Комментарий для курьера']");
+    private final WebDriverWait wait;
 
 
     public OrderForm(WebDriver webDriver) {
         this.webDriver = webDriver;
-        this.wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
+        //Инициализация ожидания
+        this.wait = new WebDriverWait(webDriver, Duration.ofSeconds(3));
     }
 
-
+    //Заполнение первой формы  заказа
     public void fillFirstStep(String name, String surname, String addr, String metro, String phoneNum) {
 
         webDriver.findElement(firstNameLocator).sendKeys(name);
         webDriver.findElement(lastNameLocator).sendKeys(surname);
         webDriver.findElement(addressLocator).sendKeys(addr);
         webDriver.findElement(metroStationLocator).sendKeys(metro);
-
+        //Выбор нужной станции из выпадающего списка
         WebElement stationOption = wait.until(
                 ExpectedConditions.elementToBeClickable(
                         By.xpath("//div[@class='select-search__select']//button[contains(., '" + metro + "')]")
@@ -42,24 +50,29 @@ public class OrderForm {
         webDriver.findElement(phoneLocator).sendKeys(phoneNum);
     }
 
+    //Кнопка для продолжения офолрмления заказа
     public void clickNextButton() {
         var nextButton = webDriver.findElement(By.cssSelector("button.Button_Button__ra12g.Button_Middle__1CSJM"));
         nextButton.click();
     }
 
+    //Кнопка заверщения заказа
     public void completeOrderButton() {
         webDriver.findElement(By.xpath("//div[contains(@class,'Order_Buttons')]//button[text()='Заказать']")).click();
     }
 
+    //Кнопка подтверждения оформления заказа
     public void conformOrder() {
         webDriver.findElement(By.xpath("//div[contains(@class,'Order_Buttons')]//button[text()='Да']")).click();
     }
 
+    //Проверка появаления Попапа с заказом
     public boolean isCheckOrderCompletePopupDisplayed() {
         var finalPopup = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("Order_Modal__YZ-d3")));
         return finalPopup.isDisplayed();
     }
 
+    //Выбор чекбокса цвета
     public void clickCheckBoxIfExists(String checkBoxId) {
         var checkBox = webDriver.findElement(By.id(checkBoxId));
         if (!checkBox.isSelected()) {
@@ -67,13 +80,14 @@ public class OrderForm {
         }
     }
 
+    //Массив цвета
     public void selectColors(String[] colors) {
         for (String color : colors) {
             clickCheckBoxIfExists(color);
         }
     }
 
-
+    //Запослнение второй формы заказа
     public void fillSecondStep(String date, String rendPeriod, String[] colorIds, String comment) {
         var inputDate = webDriver.findElement(dateLocator);
         inputDate.sendKeys(date);
@@ -86,12 +100,12 @@ public class OrderForm {
     }
 
 
-    // Основной метод выбора опции из dropdown
+    //Выбор в выпадающем списке срока
     public void selectRentalPeriod(String periodText) {
-        // Открываем dropdown
+        //Открытие списока
         openDropdown();
 
-        // Выбираем нужную опцию
+        //Выбор нужного элемента
         selectOption(periodText);
     }
 
@@ -104,13 +118,12 @@ public class OrderForm {
         );
         dropdownControl.click();
 
-        // Ждем открытия меню
         wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.className("Dropdown-menu")
         ));
     }
 
-    // Выбор опции по тексту
+    //Выбор пункта по тексту
     private void selectOption(String optionText) {
         WebElement option = wait.until(
                 ExpectedConditions.elementToBeClickable(
@@ -118,7 +131,7 @@ public class OrderForm {
                 )
         );
         option.click();
-        // Ждем закрытия dropdown
+
         wait.until(ExpectedConditions.invisibilityOfElementLocated(
                 By.className("Dropdown-menu")
         ));

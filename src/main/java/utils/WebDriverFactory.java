@@ -5,6 +5,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class WebDriverFactory {
+    //инициализация драйвера
     public static WebDriver createWebDriver() {
         WebDriver driver;
         String prop = System.getProperty("browser", "chrome");

@@ -18,6 +18,7 @@ public class OrderTest {
     private OrderForm orderForm;
     private WebDriver webDriver;
 
+    //Выбор браузера и запуск главной страницы
     @Before
     public void startUp() {
         webDriver = WebDriverFactory.createWebDriver();
@@ -27,9 +28,10 @@ public class OrderTest {
         mainPage = new MainPage(webDriver);
         orderForm = new OrderForm(webDriver);
     }
-
+    //Тест для верхней кнопки Заказать
     @Test
     public void upOrderForm() {
+        mainPage.acceptCookiesIfNeeded();
         mainPage.clickUpperOrderButton();
         orderForm.fillFirstStep("Дима", "Иванов", "ул. Потапова д 1", "Кожуховская", "81234567899");
         orderForm.clickNextButton();
@@ -38,18 +40,19 @@ public class OrderTest {
         orderForm.conformOrder();
         assertTrue(orderForm.isCheckOrderCompletePopupDisplayed());
     }
-
+    //Тест для нижней кнопки Заказать
     @Test
     public void DownOrderForm() {
+        mainPage.acceptCookiesIfNeeded();
         mainPage.clickDownOrderButton();
         orderForm.fillFirstStep("Вася", "Васильев", "пр-т Анкина д 12", "Аннино", "89876543211");
         orderForm.clickNextButton();
         orderForm.fillSecondStep("25.11.25", "двое суток", new String[]{"grey"}, "скорее");
         orderForm.completeOrderButton();
         orderForm.conformOrder();
-        assertTrue(orderForm.isCheckOrderCompletePopupDisplayed());
+        assertTrue("Окно о создании заказа не появилось", orderForm.isCheckOrderCompletePopupDisplayed());
     }
-
+    //Закрытие браузера
     @After
     public void tearDown() {
 

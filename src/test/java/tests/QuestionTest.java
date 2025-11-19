@@ -12,7 +12,7 @@ import utils.WebDriverFactory;
 import java.time.Duration;
 
 import static org.junit.Assert.assertEquals;
-import static utils.Constants.MAIN_URL;
+import static utils.Constants.*;
 
 @RunWith(Parameterized.class)
 public class QuestionTest {
@@ -24,7 +24,7 @@ public class QuestionTest {
         this.id = id;
         this.expectedValue = expectedValue;
     }
-
+    //Массив данных для теста
     @Parameterized.Parameters
     public static Object[][] testData() {
         return new Object[][]{
@@ -38,7 +38,7 @@ public class QuestionTest {
                 {7, "Да, обязательно. Всем самокатов! И Москве, и Московской области."}
         };
     }
-
+    //Выбор браузера и запуск главной страницы
     @Before
     public void startUp() {
         webDriver = WebDriverFactory.createWebDriver();
@@ -47,14 +47,14 @@ public class QuestionTest {
         webDriver.get(MAIN_URL);
 
     }
-
+    //Тест выпадающего списка
     @Test
     public void answerTest() {
         MainPage mainPage = new MainPage(webDriver);
         String actual = mainPage.clickAndGetAnswer(id);
         assertEquals("Текст не соотвествет ожиданию", expectedValue, actual);
     }
-
+    //Хакрытие браузера
     @After
     public void tearDown() {
 
