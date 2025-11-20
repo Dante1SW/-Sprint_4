@@ -38,7 +38,7 @@ public class OrderTest {
         orderForm.fillSecondStep("30.12.25", "трое суток", new String[]{"black"}, "позвонить заранее");
         orderForm.completeOrderButton();
         orderForm.conformOrder();
-        assertTrue(orderForm.isCheckOrderCompletePopupDisplayed());
+        assertTrue("Окно о создании заказа не появилось",orderForm.isCheckOrderCompletePopupDisplayed());
     }
     //Тест для нижней кнопки Заказать
     @Test

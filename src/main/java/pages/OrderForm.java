@@ -24,6 +24,20 @@ public class OrderForm {
     private final By dateLocator = By.xpath("//input[@placeholder='* Когда привезти самокат']");
     //Поле Комментарий
     private final By commentLocator = By.xpath("//input[@placeholder='Комментарий для курьера']");
+    //Кнопка продолжения заказа
+    private final By nextButtonLocator = By.cssSelector("button.Button_Button__ra12g.Button_Middle__1CSJM");
+    //Кнопка завершения заказа
+    private final By completeNextButtonLocator = By.xpath("//div[contains(@class,'Order_Buttons')]//button[text()='Заказать']");
+    //Кнопка подвтерждения заказа
+    private final By conformOrderButtonLocator = By.xpath("//div[contains(@class,'Order_Buttons')]//button[text()='Да']");
+    //Попап оформленного заказа
+    private final By popupLocator = By.xpath("//div[contains(@class, 'Order_Modal__YZ-d3')]//div[contains(text(), 'Заказ оформлен')]");
+    //Текст Про Аренду
+    private final By textLocator = By.className("Order_Header__BZXOb");
+    //Область Срока аренды
+    private final By dropdownControlLocator = By.className("Dropdown-control");
+    //Выпадающий список Сроков аренды
+    private final By dropdownMenuLocator = By.className("Dropdown-menu");
     private final WebDriverWait wait;
 
 
@@ -52,23 +66,23 @@ public class OrderForm {
 
     //Кнопка для продолжения офолрмления заказа
     public void clickNextButton() {
-        var nextButton = webDriver.findElement(By.cssSelector("button.Button_Button__ra12g.Button_Middle__1CSJM"));
+        var nextButton = webDriver.findElement(nextButtonLocator);
         nextButton.click();
     }
 
-    //Кнопка заверщения заказа
+    //Кнопка завершения заказа
     public void completeOrderButton() {
-        webDriver.findElement(By.xpath("//div[contains(@class,'Order_Buttons')]//button[text()='Заказать']")).click();
+        webDriver.findElement(completeNextButtonLocator).click();
     }
 
     //Кнопка подтверждения оформления заказа
     public void conformOrder() {
-        webDriver.findElement(By.xpath("//div[contains(@class,'Order_Buttons')]//button[text()='Да']")).click();
+        webDriver.findElement(conformOrderButtonLocator).click();
     }
 
     //Проверка появаления Попапа с заказом
     public boolean isCheckOrderCompletePopupDisplayed() {
-        var finalPopup = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("Order_Modal__YZ-d3")));
+        var finalPopup = wait.until(ExpectedConditions.visibilityOfElementLocated(popupLocator));
         return finalPopup.isDisplayed();
     }
 
@@ -91,7 +105,7 @@ public class OrderForm {
     public void fillSecondStep(String date, String rendPeriod, String[] colorIds, String comment) {
         var inputDate = webDriver.findElement(dateLocator);
         inputDate.sendKeys(date);
-        webDriver.findElement(By.className("Order_Header__BZXOb")).click();
+        webDriver.findElement(textLocator).click();
         selectRentalPeriod(rendPeriod);
         selectColors(colorIds);
         webDriver.findElement(commentLocator).sendKeys(comment);
@@ -109,22 +123,18 @@ public class OrderForm {
         selectOption(periodText);
     }
 
-    // Открытие dropdown
-    private void openDropdown() {
-        WebElement dropdownControl = wait.until(
-                ExpectedConditions.elementToBeClickable(
-                        By.className("Dropdown-control")
-                )
-        );
+    // Открытие списка
+    public void openDropdown() {
+        WebElement dropdownControl = wait.until(ExpectedConditions.elementToBeClickable(dropdownControlLocator));
         dropdownControl.click();
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.className("Dropdown-menu")
+                dropdownMenuLocator
         ));
     }
 
     //Выбор пункта по тексту
-    private void selectOption(String optionText) {
+    public void selectOption(String optionText) {
         WebElement option = wait.until(
                 ExpectedConditions.elementToBeClickable(
                         By.xpath("//div[contains(@class, 'Dropdown-option') and text()='" + optionText + "']")
@@ -133,9 +143,7 @@ public class OrderForm {
         option.click();
 
         wait.until(ExpectedConditions.invisibilityOfElementLocated(
-                By.className("Dropdown-menu")
+                dropdownMenuLocator
         ));
     }
-
-
 }
